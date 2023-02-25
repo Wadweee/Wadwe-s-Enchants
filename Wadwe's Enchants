@@ -33,16 +33,19 @@ function SelectRarity(player: player):
 #GUI TO SEE ALL THE BOOKS
 function Info(player: player):
    set metadata tag "Info" of {_player} to chest inventory with 3 rows named "Info"
+   set slots 0 of metadata tag "Info" of {_player} to diamond sword named "weapons"
    set slots 2 of metadata tag "Info" of {_player} to diamond sword named "swords"
    set slots 3 of metadata tag "Info" of {_player} to bow named "bows"
    set slots 4 of metadata tag "Info" of {_player} to crossbow named "crossbows"
    set slots 5 of metadata tag "Info" of {_player} to trident named "tridents"
    set slots 6 of metadata tag "Info" of {_player} to fishing rod named "fishing rods"
+   set slots 9 of metadata tag "Info" of {_player} to diamond pickaxe named "tools"
    set slots 11 of metadata tag "Info" of {_player} to diamond pickaxe named "pickaxes"
    set slots 12 of metadata tag "Info" of {_player} to diamond axe named "axes"
    set slots 13 of metadata tag "Info" of {_player} to diamond shovel named "shovels"
    set slots 14 of metadata tag "Info" of {_player} to diamond hoe named "hoes"
    set slots 15 of metadata tag "Info" of {_player} to shield named "shields"
+   set slots 18 of metadata tag "Info" of {_player} to diamond chestplate named "armor"
    set slots 20 of metadata tag "Info" of {_player} to diamond helmet named "helmets"
    set slots 21 of metadata tag "Info" of {_player} to diamond chestplates named "chestplates"
    set slots 22 of metadata tag "Info" of {_player} to diamond leggings named "leggings"
@@ -56,11 +59,13 @@ function Info(player: player):
 function ShowBooks(player: player, type: string):
    set metadata tag "ShowBooks" of {_player} to chest inventory with 3 rows named "Enchants"
    set slots 26 of metadata tag "ShowBooks" of {_player} to red stained glass pane named "Leave"
-   if {_type} is "swords":
+   if {_type} is "weapons":
+      stop
+   else if {_type} is "swords":
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Smite" with lore "Chance to electrocute your enemy%nl%common, uncommon, rare"
-      set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Cripple" with lore "Chance to give your enemy slowness%nl%common, uncommon"
-      set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Bleed" with lore "Cut your enemy each hit dealing extra damage%nl%uncommon, rare, epic"
-      set slots 3 of metadata tag "ShowBooks" of {_player} to enchanted book named "Butcher" with lore "Get more meat on kill%nl%common, uncommon, rare"
+      set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Cripple" with lore "Chance to give your enemy slowness%nl%common, uncommon"
+      set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Butcher" with lore "Get more meat on kill%nl%common, uncommon, rare"
+      set slots 3 of metadata tag "ShowBooks" of {_player} to enchanted book named "Bleed" with lore "Cut your enemy each hit dealing extra damage%nl%uncommon, rare, epic"
       set slots 4 of metadata tag "ShowBooks" of {_player} to enchanted book named "Reap" with lore "Chance to heal on attack%nl%uncommon, rare, epic"
       set slots 5 of metadata tag "ShowBooks" of {_player} to enchanted book named "Rage" with lore "Do more damage the less health you have%nl%epic, legendary"
       set slots 6 of metadata tag "ShowBooks" of {_player} to enchanted book named "Bloodlust" with lore "Each kill gives you stat boosts%nl%rare, epic, legendary"
@@ -74,6 +79,8 @@ function ShowBooks(player: player, type: string):
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Storm" with lore "Rain down tridents%nl%epic, legendary"
    else if {_type} is "shields":
       stop
+   else if {_type} is "tools":
+      stop
    else if {_type} is "pickaxes":
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Excavator" with lore "Mine lots of blocks%nl%rare, epic, legendary"
    else if {_type} is "axes":
@@ -84,6 +91,8 @@ function ShowBooks(player: player, type: string):
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Replant" with lore "Replant crops%nl%epic"
    else if {_type} is "fishing rods":
       stop
+   else if {_type} is "armor":
+      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Replenish" with lore "Get some durability on kill%nl%uncommon"
    else if {_type} is "helmets":
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Supervision" with lore "Gives night vision%nl%common"
    else if {_type} is "chestplates":
@@ -101,124 +110,126 @@ function ShowBooks(player: player, type: string):
 
 #GIVES THE PLAYER A RANDOM COMMON BOOK
 function GetCommon(player: player, Chance: integer):
-   if {_Chance} = 0:
+   if {_Chance} is 0:
       set {_Chance} to random integer between 1 and 7
-   if {_Chance} = 1:
+   if {_Chance} is 1:
       give {_player} enchanted book named "Smite I" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 2:
+   if {_Chance} is 2:
       give {_player} enchanted book named "Supervision" with lore "--Wadwe's Enchantments--%nl%helmet"
-   if {_Chance} = 3:
+   if {_Chance} is 3:
       give {_player} enchanted book named "Bunny" with lore "--Wadwe's Enchantments--%nl%boots"
-   if {_Chance} = 4:
+   if {_Chance} is 4:
       give {_player} enchanted book named "Poison I" with lore "--Wadwe's Enchantments--%nl%bow"
-   if {_Chance} = 5:
+   if {_Chance} is 5:
       give {_player} enchanted book named "Velocity I" with lore "--Wadwe's Enchantments--%nl%bow"
-   if {_Chance} = 6:
+   if {_Chance} is 6:
       give {_player} enchanted book named "Cripple I" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 7:
+   if {_Chance} is 7:
       give {_player} enchanted book named "Butcher I" with lore "--Wadwe's Enchantments--%nl%sword"
 
 #GIVES THE PLAYER A RANDOM UNCOMMON BOOK
 function GetUncommon(player: player, Chance: integer):
-   if {_Chance} = 0:
+   if {_Chance} is 0:
       set {_Chance} to random integer between 1 and 8
-   if {_Chance} = 1:
+   if {_Chance} is 1:
       give {_player} enchanted book named "Smite II" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 2:
+   if {_Chance} is 2:
       give {_player} enchanted book named "Reap I" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 3:
+   if {_Chance} is 3:
       give {_player} enchanted book named "Sonic I" with lore "--Wadwe's Enchantments--%nl%boots"
-   if {_Chance} = 4:
+   if {_Chance} is 4:
       give {_player} enchanted book named "Poison II" with lore "--Wadwe's Enchantments--%nl%bow"
-   if {_Chance} = 5:
+   if {_Chance} is 5:
       give {_player} enchanted book named "Bleed I" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 6:
+   if {_Chance} is 6:
       give {_player} enchanted book named "Velocity II" with lore "--Wadwe's Enchantments--%nl%bow"
-   if {_Chance} = 7:
+   if {_Chance} is 7:
       give {_player} enchanted book named "Cripple II" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 8:
+   if {_Chance} is 8:
       give {_player} enchanted book named "Butcher II" with lore "--Wadwe's Enchantments--%nl%sword"
 
 #GIVES THE PLAYER A RANDOM RARE BOOK
 function GetRare(player: player, Chance: integer):
-   if {_Chance} = 0:
-      set {_Chance} to random integer between 1 and 11
-   if {_Chance} = 1:
+   if {_Chance} is 0:
+      set {_Chance} to random integer between 1 and 12
+   if {_Chance} is 1:
       give {_player} enchanted book named "Smite III" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 2:
+   if {_Chance} is 2:
       give {_player} enchanted book named "Reap II" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 3:
+   if {_Chance} is 3:
       give {_player} enchanted book named "Tank I" with lore "--Wadwe's Enchantments--%nl%chestplate"
-   if {_Chance} = 4:
+   if {_Chance} is 4:
       give {_player} enchanted book named "Sonic II" with lore "--Wadwe's Enchantments--%nl%boots"
-   if {_Chance} = 5:
+   if {_Chance} is 5:
       give {_player} enchanted book named "Poison III" with lore "--Wadwe's Enchantments--%nl%bow"
-   if {_Chance} = 6:
+   if {_Chance} is 6:
       give {_player} enchanted book named "Bleed II" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 7:
+   if {_Chance} is 7:
       give {_player} enchanted book named "Leap I" with lore "--Wadwe's Enchantments--%nl%axe"
-   if {_Chance} = 8:
+   if {_Chance} is 8:
       give {_player} enchanted book named "Bloodlust I" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 9:
+   if {_Chance} is 9:
       give {_player} enchanted book named "Velocity III" with lore "--Wadwe's Enchantments--%nl%bow"
-   if {_Chance} = 10:
+   if {_Chance} is 10:
       give {_player} enchanted book named "Excavator I" with lore "--Wadwe's Enchantments--%nl%pickaxe"
-   if {_Chance} = 11:
+   if {_Chance} is 11:
       give {_player} enchanted book named "Butcher III" with lore "--Wadwe's Enchantments--%nl%sword"
+   if {_Chance} is 12:
+      give {_player} enchanted book named "Replenish" with lore "--Wadwe's Enchantments--%nl%armor"
 #GIVES THE PLAYER A RANDOM EPIC BOOK
 function GetEpic(player: player, Chance: integer):
-   if {_Chance} = 0:
-      set {_Chance} to random integer between 1 and 10
-   if {_Chance} = 1:
+   if {_Chance} is 0:
+      set {_Chance} to random integer between 1 and 11
+   if {_Chance} is 1:
       give {_player} enchanted book named "Reap III" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 2:
+   if {_Chance} is 2:
       give {_player} enchanted book named "Tank II" with lore "--Wadwe's Enchantments--%nl%chestplate"
-   if {_Chance} = 3:
+   if {_Chance} is 3:
       give {_player} enchanted book named "Healthy" with lore "--Wadwe's Enchantments--%nl%leggings"
-   if {_Chance} = 4:
+   if {_Chance} is 4:
       give {_player} enchanted book named "Bleed III" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 5:
+   if {_Chance} is 5:
       give {_player} enchanted book named "Leap II" with lore "--Wadwe's Enchantments--%nl%axe"
-   if {_Chance} = 6:
+   if {_Chance} is 6:
       give {_player} enchanted book named "Bloodlust II" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 7:
+   if {_Chance} is 7:
       give {_player} enchanted book named "Revenge" with lore "--Wadwe's Enchantments--%nl%chestplate"
-   if {_Chance} = 8:
+   if {_Chance} is 8:
       give {_player} enchanted book named "Excavator II" with lore "--Wadwe's Enchantments--%nl%pickaxe"
-   if {_Chance} = 9:
+   if {_Chance} is 9:
       give {_player} enchanted book named "Rage I" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 10:
+   if {_Chance} is 10:
       give {_player} enchanted book named "Replant" with lore "--Wadwe's Enchantments--%nl%hoe"
-   if {_Chance} = 11:
+   if {_Chance} is 11:
       give {_player} enchanted book named "Storm I" with lore "--Wadwe's Enchantments--%nl%trident"
 #GIVES THE PLAYER A RANDOM LEGENDARY BOOK
 function GetLegendary(player: player, Chance: integer):
-   if {_Chance} = 0:
+   if {_Chance} is 0:
       set {_Chance} to random integer between 1 and 6
-   if {_Chance} = 1:
+   if {_Chance} is 1:
       give {_player} enchanted book named "Tank III" with lore "--Wadwe's Enchantments--%nl%chestplate"
-   if {_Chance} = 2:
+   if {_Chance} is 2:
       give {_player} enchanted book named "Thunderstorm" with lore "--Wadwe's Enchantments--%nl%bow"
-   if {_Chance} = 3:
+   if {_Chance} is 3:
       give {_player} enchanted book named "Bloodlust III" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 4:
+   if {_Chance} is 4:
       give {_player} enchanted book named "Excavator III" with lore "--Wadwe's Enchantments--%nl%pickaxe"
-   if {_Chance} = 5:
+   if {_Chance} is 5:
       give {_player} enchanted book named "Rage II" with lore "--Wadwe's Enchantments--%nl%sword"
-   if {_Chance} = 6:
+   if {_Chance} is 6:
       give {_player} enchanted book named "Storm II" with lore "--Wadwe's Enchantments--%nl%trident"
 #SELECTS THE RARITY OF THE BOOK
 function GetBook(player: player, Rarity: string, Chances: objects):
    set {_Chance} to random integer between 0 and 100
-   if {_Chance} <= {_Chances::1}:
+   if {_Chance} is smaller than or equal to {_Chances::1}:
       GetCommon({_player}, 0)
-   else if {_Chance} <= {_Chances::2}:
+   else if {_Chance} is smaller than or equal to  {_Chances::2}:
       GetUncommon({_player}, 0)
-   else if {_Chance} <= {_Chances::3}:
+   else if {_Chance} is smaller than or equal to  {_Chances::3}:
       GetRare({_player}, 0)
-   else if {_Chance} <= {_Chances::4}:
+   else if {_Chance} is smaller than or equal to  {_Chances::4}:
       GetEpic({_player}, 0)
-   else if {_Chance} <= {_Chances::5}:
+   else if {_Chance} is smaller than or equal to  {_Chances::5}:
       GetLegendary({_player}, 0) 
 
 #OPENS THE GUI
@@ -231,25 +242,25 @@ command /book <integer> <integer>:
       set {Rarity} to arg-1
       set {Book} to arg-2
       if player has permission "OP":
-         if {Rarity} = 1:
+         if {Rarity} is 1:
             GetCommon(player, {Book})
-         else if {Rarity} = 2:
+         else if {Rarity} is 2:
             GetUncommon(player, {Book})
-         else if {Rarity} = 3:
+         else if {Rarity} is 3:
             GetRare(player, {Book})
-         else if {Rarity} = 4:
+         else if {Rarity} is 4:
             GetEpic(player, {Book})
-         else if {Rarity} = 5:
+         else if {Rarity} is 5:
             GetLegendary(player, {Book}) 
 
 #INVENTORY STUFF
 on inventory click:
-   if {InvOpen.%player%} = true:
+   if {InvOpen.%player%} is true:
       cancel event
       wait 2 ticks
 
    #OPTIONS TO ENCHANT OR GET MORE BOOKS
-   if event-inventory = (metadata tag "EnchantmentGui" of player):
+   if event-inventory is (metadata tag "EnchantmentGui" of player):
       if index of event-slot is 10:
          Enchant(player)
       if index of event-slot is 12:
@@ -258,28 +269,28 @@ on inventory click:
          Info(player)
 
    #OPTIONS TO CHANGE YOUR ODDS
-   if event-inventory = (metadata tag "SelectRarity" of player):
+   if event-inventory is (metadata tag "SelectRarity" of player):
       #COMMON
       if index of event-slot is 10:
-         if the player's level > 10:
+         if the player's level is greater than 10:
             reduce the player's level by 10
             set {Chances::*} to 75,90,96,99 and 100
             GetBook(player, "Normal", {Chances::*})
       #UNCOMMON
       if index of event-slot is 12:
-         if the player's level > 15:
+         if the player's level is greater than 15:
             reduce the player's level by 15
             set {Chances::*} to 55,85,95,99 and 100
             GetBook(player, "Lucky", {Chances::*})
       #RARE
       if index of event-slot is 14:
-         if the player's level > 25:
+         if the player's level is greater than 25:
             reduce the player's level by 25
             set {Chances::*} to 25,75,90,98  and 100
             GetBook(player, "Very Lucky", {Chances::*})
       #EPIC
       if index of event-slot is 16:
-         if the player's level > 35:
+         if the player's level is greater than 35:
             reduce the player's level by 35
             set {Chances::*} to 10,50,80,95 and 100
             GetBook(player, "SUPER LUCKY", {Chances::*})
@@ -287,14 +298,14 @@ on inventory click:
          EnchantmentGui(player)
 
    #VALIDATES THE ENCHANT
-   if event-inventory = (metadata tag "Enchant" of player):
-      if event-slot = 11:
+   if event-inventory is (metadata tag "Enchant" of player):
+      if event-slot is 11:
          add event-slot to player's inventory
          set slot 11 of event-inventory to air
-      if event-slot = 15:
+      if event-slot is 15:
          add event-slot to player's inventory
          set slot 15 of event-inventory to air
-      else if index of event-slot = 22:
+      else if index of event-slot is 22:
          if slots 15 and 11 of event-inventory don't contain air:
             set {Enchant} to false
             if {EnchantLore::2} contains "sword":
@@ -367,6 +378,13 @@ on inventory click:
                   set slot 15 of metadata tag "Enchant" of player to air
                else:
                   set {Enchant} to true
+            else if {EnchantLore::2} contains "armor":
+               if slot 11 of event-inventory isn't a helmet or a chestplate or leggings or boots:
+                  play sound "block.anvil.place"
+                  give player slot 15 of metadata tag "Enchant" of player
+                  set slot 15 of metadata tag "Enchant" of player to air
+               else:
+                  set {Enchant} to true
             else if {EnchantLore::2} contains "helmet":
                if slot 11 of event-inventory isn't a helmet:
                   play sound "block.anvil.place"
@@ -382,21 +400,28 @@ on inventory click:
                else:
                   set {Enchant} to true
             else if {EnchantLore::2} contains "leggings":
-               if slot 11 of event-inventory isn't a leggings:
+               if slot 11 of event-inventory isn't leggings:
                   play sound "block.anvil.place"
                   give player slot 15 of metadata tag "Enchant" of player
                   set slot 15 of metadata tag "Enchant" of player to air
                else:
                   set {Enchant} to true
             else if {EnchantLore::2} contains "boots":
-               if slot 11 of event-inventory isn't a boots:
+               if slot 11 of event-inventory isn't boots:
+                  play sound "block.anvil.place"
+                  give player slot 15 of metadata tag "Enchant" of player
+                  set slot 15 of metadata tag "Enchant" of player to air
+               else:
+                  set {Enchant} to true
+            else if {EnchantLore::2} contains "elytra":
+               if slot 11 of event-inventory isn't an elytra:
                   play sound "block.anvil.place"
                   give player slot 15 of metadata tag "Enchant" of player
                   set slot 15 of metadata tag "Enchant" of player to air
                else:
                   set {Enchant} to true
 
-            if {Enchant} = true:
+            if {Enchant} is true:
                #CHECKS TO SEE IF THE ENCHANT IS ALREADY ON THE SWORD
                set {TestFail} to false
                set {Check::*} to {EnchantName} split at " "
@@ -408,7 +433,7 @@ on inventory click:
                      give player slot 15 of metadata tag "Enchant" of player
                      set slot 15 of metadata tag "Enchant" of player to air
                      stop loop
-               if {TestFail} = false:
+               if {TestFail} is false:
                   play sound "block.anvil.use"
                   add {EnchantName} to lore of slot 11 of event-inventory
                   add slot 11 of event-inventory to player's inventory
@@ -421,8 +446,8 @@ on inventory click:
          EnchantmentGui(player)
    
    #ALLOWS YOU TO ADD AND REMOVE ITEMS
-   if {EnchantInv.%player%} = true:
-      if event-inventory != (metadata tag "Enchant" of player):
+   if {EnchantInv.%player%} is true:
+      if event-inventory isn't (metadata tag "Enchant" of player):
          if event-slot's lore contains "--Wadwe's Enchantments--":
             set {EnchantLore::*} to event-slot's lore
             set {EnchantName} to name of event-slot
@@ -434,11 +459,13 @@ on inventory click:
             set {ItemTemp} to slot 11 of metadata tag "Enchant" of player
             set slot 11 of metadata tag "Enchant" of player to event-slot
             set event-slot to {ItemTemp}
-            if slot 11 of metadata tag "Enchant"  of player is anvil named "Enchant" with lore "Combine items and enchanted books":
+            if slot 11 of metadata tag "Enchant" of player is anvil named "Enchant" with lore "Combine items and enchanted books":
                set slot 11 of metadata tag "Enchant" of player to air
 
    #PICK WHAT TYPE OF BOOKS YOU WANT
-   if event-inventory = (metadata tag "Info" of player):
+   if event-inventory is (metadata tag "Info" of player):
+      if index of event-slot is 0:
+         ShowBooks(player, "weapons")
       if index of event-slot is 2:
          ShowBooks(player, "swords")
       if index of event-slot is 3:
@@ -449,6 +476,8 @@ on inventory click:
          ShowBooks(player, "tridents")
       if index of event-slot is 6:
          ShowBooks(player, "fishing rods")
+      if index of event-slot is 9:
+         ShowBooks(player, "tools")
       if index of event-slot is 11:
          ShowBooks(player, "pickaxes")
       if index of event-slot is 12:
@@ -459,6 +488,8 @@ on inventory click:
          ShowBooks(player, "hoes")
       if index of event-slot is 15:
          ShowBooks(player, "shields")
+      if index of event-slot is 18:
+         ShowBooks(player, "armor")
       if index of event-slot is 20:
          ShowBooks(player, "helmets")
       if index of event-slot is 21:
@@ -468,18 +499,18 @@ on inventory click:
       if index of event-slot is 23:
          ShowBooks(player, "boots")
       if index of event-slot is 24:
-         ShowBooks(player, "elytra")
+         ShowBooks(player, "elytras")
 
       if index of event-slot is 26:
          EnchantmentGui(player)
-         
-   if event-inventory = (metadata tag "ShowBooks" of player):
+
+   if event-inventory is (metadata tag "ShowBooks" of player):
       if index of event-slot is 26:
          Info(player)
 
 #STOPS SOME STUFF FROM HAPPENING OUT OF THE GUI
 on inventory close:
-   if {EnchantInv.%player%} = true:
+   if {EnchantInv.%player%} is true:
       give player slot 11 of metadata tag "Enchant" of player
       give player slot 15 of metadata tag "Enchant" of player
    set {InvOpen.%player%} to false
@@ -490,102 +521,109 @@ on join:
 
 every 1 second:
    loop all players:
-      if {LeapCD.%loop-value%} > 0:
+      if {LeapCD.%loop-value%} is greater than 0:
          remove 1 from {LeapCD.%loop-value%}
 #TOOLS
 #SWORDS
 #SMITE - Common, Uncommon, Rare
 on damage:
-   set {chance} to random integer between 0 and 100
-   if the lore of the attacker's tool contains "Smite I":
-      if {chance} < 10:
-         strike lightning at the victim
-   else if the lore of the attacker's tool contains "Smite II":
-      if {chance} < 20:
-         strike lightning at the victim
-   else if the lore of the attacker's tool contains "Smite III":
-      if {chance} < 35:
-         strike lightning at the victim
+   if event-damage cause is attack:
+      set {chance} to random integer between 0 and 100
+      if the lore of the attacker's tool contains "Smite I":
+         if {chance} is smaller than 10:
+            strike lightning at the victim
+      else if the lore of the attacker's tool contains "Smite II":
+         if {chance} is smaller than 20:
+            strike lightning at the victim
+      else if the lore of the attacker's tool contains "Smite III":
+         if {chance} is smaller than 35:
+            strike lightning at the victim
 #REAP - Uncommon, Rare, Epic
 on damage:
-   set {reap} to random integer between 0 and 100
-   if the lore of the attacker's tool contains "Reap I":
-      if {reap} < 5:
-         add 1 to the health of the attacker
-   else if the lore of the attacker's tool contains "Reap II":
-      if {reap} < 10:
-         add 1 to the health of the attacker
-   else if the lore of the attacker's tool contains "Reap III":
-      if {reap} < 20:
-         add 1 to the health of the attacker
+   if event-damage cause is attack:
+      set {reap} to random integer between 0 and 100
+      if the lore of the attacker's tool contains "Reap I":
+         if {reap} is smaller than 5:
+            add 1 to the health of the attacker
+      else if the lore of the attacker's tool contains "Reap II":
+         if {reap} is smaller than 10:
+            add 1 to the health of the attacker
+      else if the lore of the attacker's tool contains "Reap III":
+         if {reap} is smaller than 20:
+            add 1 to the health of the attacker
 #BLEED - Uncommon, Rare, Epic
 on damage:
-   if the lore of the attacker's tool contains "Bleed I":
-      wait 1 second
-      damage victim by 0.5 hearts
-   else if the lore of the attacker's tool contains "Bleed II":
-      loop 2 times:
+   if event-damage cause is attack:
+      if the lore of the attacker's tool contains "Bleed I":
          wait 1 second
          damage victim by 0.5 hearts
-   else if the lore of the attacker's tool contains "Bleed III":
-      loop 3 times:
-         wait 1 second
-         damage victim by 0.5 hearts
+      else if the lore of the attacker's tool contains "Bleed II":
+         loop 2 times:
+            wait 1 second
+            damage victim by 0.5 hearts
+      else if the lore of the attacker's tool contains "Bleed III":
+         loop 3 times:
+            wait 1 second
+            damage victim by 0.5 hearts
 #BLOODLUST - Rare, Epic, Legendary
 on death:
-   if victim isn't player:
-      if the lore of the attacker's tool contains "Bloodlust I":
-         apply strength without particles to attacker for 10 seconds
-         apply speed without particles to attacker for 15 seconds
-      else if the lore of the attacker's tool contains "Bloodlust II":
-         apply strength without particles to attacker for 20 seconds
-         apply speed without particles to attacker for 20 seconds
-      else if the lore of the attacker's tool contains "Bloodlust III":
-         apply strength 2 without particles to attacker for 30 seconds
-         apply speed without particles to attacker for 35 seconds
-         add 1 to the health of the attacker
+   if event-damage cause is attack:
+      if victim isn't player:
+         if the lore of the attacker's tool contains "Bloodlust I":
+            apply strength without particles to attacker for 10 seconds
+            apply speed without particles to attacker for 15 seconds
+         else if the lore of the attacker's tool contains "Bloodlust II":
+            apply strength without particles to attacker for 20 seconds
+            apply speed without particles to attacker for 20 seconds
+         else if the lore of the attacker's tool contains "Bloodlust III":
+            apply strength 2 without particles to attacker for 30 seconds
+            apply speed without particles to attacker for 35 seconds
+            add 1 to the health of the attacker
 #CRIPPLE - Common, Uncommon
 on damage:
-   set {chance} to random integer between 0 and 100
-   if the lore of the attacker's tool contains "Cripple I":
-      if {chance} < 10:
-         apply slowness without particles to victim for 3 seconds
-   else if the lore of the attacker's tool contains "Cripple II":
-      if {chance} < 20:
-         apply slowness without particles to victim for 8 seconds
+   if event-damage cause is attack:
+      set {chance} to random integer between 0 and 100
+      if the lore of the attacker's tool contains "Cripple I":
+         if {chance} is smaller than 10:
+            apply slowness without particles to victim for 3 seconds
+      else if the lore of the attacker's tool contains "Cripple II":
+         if {chance} is smaller than 20:
+            apply slowness without particles to victim for 8 seconds
 #BUTCHER - Common, Uncommon, Rare
 on death:
-   if the lore of the attacker's tool contains "Butcher I":
-      set {ButcherAmount} to 1
-   if the lore of the attacker's tool contains "Butcher II":
-      set {ButcherAmount} to 2
-   if the lore of the attacker's tool contains "Butcher III":
-      set {ButcherAmount} to 3
-   if the lore of the attacker's tool contains "Butcher I" or "Butcher II" or "Butcher III":
-      if victim is an animal:
-         if victim is a cow:
-            loop {ButcherAmount} times:
-               drop 1 raw beef
-         if victim is a chicken:
-            loop {ButcherAmount} times:
-               drop 1 raw chicken
-         if victim is a pig:
-            loop {ButcherAmount} times:
-               drop 1 raw porkchop
-         if victim is a sheep:
-            loop {ButcherAmount} times:
-               drop 1 raw mutton
-         if victim is a rabbit:
-            loop {ButcherAmount} times:
-               drop 1 raw rabbit
+   if event-damage cause is attack:
+      if the lore of the attacker's tool contains "Butcher I":
+         set {ButcherAmount} to 1
+      else if the lore of the attacker's tool contains "Butcher II":
+         set {ButcherAmount} to 2
+      else if the lore of the attacker's tool contains "Butcher III":
+         set {ButcherAmount} to 3
+      if the lore of the attacker's tool contains "Butcher I" or "Butcher II" or "Butcher III":
+         if victim is an animal:
+            if victim is a cow:
+               loop {ButcherAmount} times:
+                  drop 1 raw beef
+            if victim is a chicken:
+               loop {ButcherAmount} times:
+                  drop 1 raw chicken
+            if victim is a pig:
+               loop {ButcherAmount} times:
+                  drop 1 raw porkchop
+            if victim is a sheep:
+               loop {ButcherAmount} times:
+                  drop 1 raw mutton
+            if victim is a rabbit:
+               loop {ButcherAmount} times:
+                  drop 1 raw rabbit
 #RAGE - Epic, Legendary
 on damage:
-   if the lore of the attacker's tool contains "Rage I" or "Rage II":
-      set {Ragehealth} to max health of attacker - health of attacker
-      if the lore of the attacker's tool contains "Rage I":
-         increase damage by {Ragehealth} / 2
-      if the lore of the attacker's tool contains "Rage II":
-         increase damage by {Ragehealth}
+   if event-damage cause is attack:
+      if the lore of the attacker's tool contains "Rage I" or "Rage II":
+         set {Ragehealth} to max health of attacker - health of attacker
+         if the lore of the attacker's tool contains "Rage I":
+            increase damage by {Ragehealth} / 2
+         else if the lore of the attacker's tool contains "Rage II":
+            increase damage by {Ragehealth}
 #BOW
 #POISON - Common, Uncommon, Rare
 on damage:
@@ -625,9 +663,9 @@ on shoot:
       set {VelocityMultiplier} to 1
       if the lore of the shooter's tool contains "Velocity I":
          Set {VelocityMultiplier} to 1.5
-      if the lore of the shooter's tool contains "Velocity II":
+      else if the lore of the shooter's tool contains "Velocity II":
          Set {VelocityMultiplier} to 2
-      if the lore of the shooter's tool contains "Velocity III":
+      else if the lore of the shooter's tool contains "Velocity III":
          Set {VelocityMultiplier} to 2.5
       cancel event
       set {VelocityVelocity} to Velocity of projectile 
@@ -648,22 +686,22 @@ on damage:
          else if the lore of the attacker's tool contains "Storm II":
             set {StormAmount} to 200
          
-         if {StormName} != "StormTrident":
+         if {StormName} isn't "Storm Trident":
             loop {StormAmount} times:
                spawn trident 30 blocks above the victim
-               set name of last spawned trident to "StormTrident"
+               set name of last spawned trident to "Storm Trident"
                set {StormRandomX} to a random integer between -50 and 50
                set {StormRandomZ} to a random integer between -50 and 50 
                set velocity of last spawned trident to vector {StormRandomX}/100,-5,{StormRandomZ}/100
                wait 1 ticks
-   if {StormName} = "StormTrident":
+   if {StormName} is "Storm Trident":
       strike lightning at the victim
 #SHIELD
 #PICKAXE
 #EXCAVATOR
 on block break:
    if the lore of the player's tool contains "Excavator I" or "Excavator II" or "Excavator III":
-      if Player's held item's durability > max durability of player's tool:
+      if Player's held item's durability is greater than max durability of player's tool:
          stop
       else:
          if player is holding a pickaxe:
@@ -672,21 +710,24 @@ on block break:
             if the lore of the player's tool contains "Excavator I":
                loop blocks in radius 1 around {ExcavatorPos}:
                   break loop-block
-                  Remove -1 from Player's held item's durability
-            if the lore of the player's tool contains "Excavator II":
+                  if player's gamemode isn't creative:
+                     Remove -1 from Player's held item's durability
+            else if the lore of the player's tool contains "Excavator II":
                loop blocks in radius 2 around {ExcavatorPos}:
                   break loop-block
-                  Remove -1 from Player's held item's durability
-            if the lore of the player's tool contains "Excavator III":
+                  if player's gamemode isn't creative:
+                     Remove -1 from Player's held item's durability
+            else if the lore of the player's tool contains "Excavator III":
                loop blocks in radius 3 around {ExcavatorPos}:
                   break loop-block
-                  Remove -1 from Player's held item's durability
-         if Player's held item's durability > max durability of player's tool:
+                  if player's gamemode isn't creative:
+                     Remove -1 from Player's held item's durability
+         if Player's held item's durability is greater than max durability of player's tool:
             stop
 #LEAP - Rare, Epic
 on right click with axe:
    if the lore of the player's tool contains "Leap I" or "Leap II":
-      if {LeapCD.%player%} = 0:
+      if {LeapCD.%player%} is 0:
          set {LeapCD.%player%} to 10
          if the lore of the player's tool contains "Leap I":
             push the player in the Direction of the player at speed 2
@@ -703,24 +744,34 @@ on block break:
          if player's inventory contains "potato" parsed as itemtype:
             set location of event-block to potato plant
             remove 1 potato from the player's inventory
-      if event-block is a ripe carrot plant:
+      else if event-block is a ripe carrot plant:
          if player's inventory contains "carrot" parsed as itemtype:
             set location of event-block to carrot plant
             remove 1 carrot from the player's inventory
-      if event-block is a ripe wheat plant:
+      else if event-block is a ripe wheat plant:
          if player's inventory contains "wheat seeds" parsed as itemtype:
             set location of event-block to wheat plant
             remove 1 wheat seeds from the player's inventory
-      if event-block is a ripe beetroot plant:
+      else if event-block is a ripe beetroot plant:
          if player's inventory contains "beetroot seeds" parsed as itemtype:
             set location of event-block to beetroot plant
             remove 1 beetroot seeds from the player's inventory
-      if event-block is a ripe nether wart plant:
+      else if event-block is a ripe nether wart plant:
          if player's inventory contains "nether wart" parsed as itemtype:
             set location of event-block to nether wart plant
             remove 1 nether wart from the player's inventory
 #FISHING ROD
 #ARMOR
+#REPAIR
+on death:
+   if the lore of the attacker's helmet contains "Replenish":
+      add -100 to the durability of the attacker's helmet
+   if the lore of the attacker's chestplate contains "Replenish":
+      add -100 to the durability of the attacker's chestplate
+   if the lore of the attacker's leggings contains "Replenish":
+      add -100 to the durability of the attacker's leggings
+   if the lore of the attacker's boots contains "Replenish":
+      add -100 to the durability of the attacker's boots
 #HELMET
 #SUPERVISION - Common
 every 1 second:
@@ -746,17 +797,17 @@ on death:
       set {RevengeZ::*} to 0.15, -0.15, 0, 0, 0.1, -0.1, 0.1, -0.1
       loop 8 times:
          spawn tnt at the victim
-         set the name of the last spawned tnt to "RevengeTNT"
+         set the name of the last spawned tnt to "Revenge TNT"
          set the Velocity of the last spawned tnt to vector {RevengeX::%loop-value%},0.5,{RevengeZ::%loop-value%}
 on explode:
    set {RevengeName} to name of event-entity
-   if {RevengeName} = "RevengeTNT":
+   if {RevengeName} is "Revenge TNT":
       cancel event
       play huge explosion at position of event-entity
 on damage:
    if attacker is tnt:
       set {RevengeName} to name of attacker
-      if {RevengeName} = "RevengeTNT":
+      if {RevengeName} is "Revenge TNT":
          if victim is a dropped item:
             cancel event
 #LEGGINGS
@@ -770,9 +821,9 @@ every 1 second:
 every 1 second:
    loop all players:
       if the lore of the loop-player's boots contains "Sonic I":
-         apply speed without particles to loop-player for 1 second
-      if the lore of the loop-player's boots contains "Sonic II":
-         apply speed 2 without particles to loop-player for 1 second
+         apply speed without particles to loop-player for 2 second
+      else if the lore of the loop-player's boots contains "Sonic II":
+         apply speed 2 without particles to loop-player for 2 second
 #BUNNY - Common
 every 1 second:
    loop all players:
