@@ -1,8 +1,23 @@
+command /allyadd <player>:
+   trigger:
+      add arg-1 to {Allies.%player%::*}
+      add uuid of arg-1 to {AllyUuids.%player%::*}
+
+command /allyremove <player>:
+   trigger:
+      remove arg-1 from {Allies.%player%::*}
+      remove uuid of arg-1 from {AllyUuids.%player%::*}
+
+command /allylist:
+   trigger:
+      broadcast "%{Allies.%player%::*}%"
+
 #SELECT THE OPTIONS TO ENCHANT OR GET MORE BOOKS
 function EnchantmentGui(player: player):
    set metadata tag "EnchantmentGui" of {_player} to chest inventory with 3 rows named "Select"
    set slots 10 of metadata tag "EnchantmentGui" of {_player} to anvil named "Enchant" with lore "Combine items and enchanted books"
    set slots 12 of metadata tag "EnchantmentGui" of {_player} to enchanting table named "Get Books" with lore "Get new books to enchant with"
+   set slots 14 of metadata tag "EnchantmentGui" of {_player} to respawn anchor named "Merge" with lore "Combine books to get higher tiers"
    set slots 16 of metadata tag "EnchantmentGui" of {_player} to book and quill named "Info" with lore "See all books"
    open (metadata tag "EnchantmentGui" of {_player}) to {_player}
    set {InvOpen.%{_player}%} to true
@@ -17,7 +32,7 @@ function Enchant(player: player):
    open (metadata tag "Enchant" of {_player}) to {_player}
    set {InvOpen.%{_player}%} to true
    set {EnchantInv.%{_player}%} to true
-   
+
 #SELECT THE LUCK OF YOUR BOOK ODDS
 function SelectRarity(player: player):
    set metadata tag "SelectRarity" of {_player} to chest inventory with 3 rows named "Get Books"
@@ -26,6 +41,12 @@ function SelectRarity(player: player):
    set slots 12 of metadata tag "SelectRarity" of {_player} to block of iron named "Lucky" with lore "15 Levels"
    set slots 14 of metadata tag "SelectRarity" of {_player} to block of gold named "Very Lucky" with lore "25 Levels"
    set slots 16 of metadata tag "SelectRarity" of {_player} to block of diamond named "SUPER LUCKY" with lore "35 Levels"
+   set slots 26 of metadata tag "SelectRarity" of {_player} to red stained glass pane named "Leave"
+   open (metadata tag "SelectRarity" of {_player}) to {_player}
+   set {InvOpen.%{_player}%} to true
+
+#GUI TO MERGE BOOKS
+function Merge(player: player):
    set slots 26 of metadata tag "SelectRarity" of {_player} to red stained glass pane named "Leave"
    open (metadata tag "SelectRarity" of {_player}) to {_player}
    set {InvOpen.%{_player}%} to true
@@ -75,8 +96,9 @@ function ShowBooks(player: player, type: string):
       set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Velocity" with lore "Arrows travel thurther and faster%nl%common, uncommon, rare"
       set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Thunderstorm" with lore "Rain down lightning onto your arrow%nl%legendary"
       set slots 3 of metadata tag "ShowBooks" of {_player} to enchanted book named "Kinetic Buildup" with lore "Buildup kinetic energy from arrows to fire a stronger arrow%nl%rare, epic, legendary"
+      set slots 7 of metadata tag "ShowBooks" of {_player} to enchanted book named "Carpet Bomber" with lore "HeHeHaHa%nl%legendary"
    else if {_type} is "crossbows":
-      stop
+      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Ricochet" with lore "Projectiles bounce from enemy to enemy%nl%rare, epic, legendary"
    else if {_type} is "tridents":
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Storm" with lore "Rain down tridents%nl%epic, legendary"
    else if {_type} is "shields":
@@ -91,7 +113,8 @@ function ShowBooks(player: player, type: string):
    else if {_type} is "shovels":
       stop
    else if {_type} is "hoes":
-      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Replant" with lore "Replant crops%nl%epic"
+      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Tractor" with lore "Till land in a larger area%nl%epic"
+      set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Replant" with lore "Replant crops%nl%rare, epic"
    else if {_type} is "fishing rods":
       stop
    else if {_type} is "armor":
@@ -99,12 +122,16 @@ function ShowBooks(player: player, type: string):
    else if {_type} is "helmets":
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Supervision" with lore "Gives night vision%nl%common"
       set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Sixth Sense" with lore "See all creatues in a radius%nl%uncommon, rare, epic"
+      set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Holy Protection" with lore "Protects against holy damage sources%nl%uncommon, rare, epic"
    else if {_type} is "chestplates":
-      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Smoke Grenade" with lore "Dodge the first hit when attacked%nl%common, uncommon, rare"
-      set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Tank" with lore "Increases health%nl%rare, epic, legendary"
-      set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Revenge" with lore "Explode on death%nl%epic"
+      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Combat Roll" with lore "Dodge the first hit when attacked%nl%common, uncommon, rare"
+      set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Aura Of Fortitude" with lore "Give nearby allies resistance%nl%rare, epic"
+      set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Padding" with lore "Projectiles do less damage based on velocity%nl%epic"
+      set slots 3 of metadata tag "ShowBooks" of {_player} to enchanted book named "Tank" with lore "Increases health%nl%rare, epic, legendary"
+      set slots 4 of metadata tag "ShowBooks" of {_player} to enchanted book named "Revenge" with lore "Explode on death%nl%epic"
    else if {_type} is "leggings":
-      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Healthy" with lore "Gives regen%nl%epic"
+      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Plague" with lore "Infects enemies with the plague%nl%uncommon, rare"
+      set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Healthy" with lore "Gives regen%nl%epic"
    else if {_type} is "boots":
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Bunny" with lore "Gives jump boost%nl%common"
       set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Sonic" with lore "Gives speed%nl%uncommon, rare"
@@ -119,154 +146,178 @@ function GetCommon(player: player, Chance: integer):
    if {_Chance} is 0:
       set {_Chance} to random integer between 1 and 8
    if {_Chance} is 1:
-      give {_player} enchanted book named "Smite I" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Smite I" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 2:
-      give {_player} enchanted book named "Supervision" with lore "--Wadwe's Enchantments--%nl%helmet"
+      give {_player} enchanted book named "Supervision" with lore "--Wadwe's Enchantments--%nl%helmet%nl%Max level: 1"
    if {_Chance} is 3:
-      give {_player} enchanted book named "Bunny" with lore "--Wadwe's Enchantments--%nl%boots"
+      give {_player} enchanted book named "Bunny" with lore "--Wadwe's Enchantments--%nl%boots%nl%Max level: 1"
    if {_Chance} is 4:
-      give {_player} enchanted book named "Poison I" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Poison I" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
    if {_Chance} is 5:
-      give {_player} enchanted book named "Velocity I" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Velocity I" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
    if {_Chance} is 6:
-      give {_player} enchanted book named "Cripple I" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Cripple I" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 2"
    if {_Chance} is 7:
-      give {_player} enchanted book named "Butcher I" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Butcher I" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 8:
-      give {_player} enchanted book named "Smoke Grenade I" with lore "--Wadwe's Enchantments--%nl%chestplate"
+      give {_player} enchanted book named "Combat Roll I" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 3"
 
 #GIVES THE PLAYER A RANDOM UNCOMMON BOOK
 function GetUncommon(player: player, Chance: integer):
    if {_Chance} is 0:
-      set {_Chance} to random integer between 1 and 123
+      set {_Chance} to random integer between 1 and 15
    if {_Chance} is 1:
-      give {_player} enchanted book named "Smite II" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Smite II" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 2:
-      give {_player} enchanted book named "Reap I" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Reap I" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 3:
-      give {_player} enchanted book named "Sonic I" with lore "--Wadwe's Enchantments--%nl%boots"
+      give {_player} enchanted book named "Sonic I" with lore "--Wadwe's Enchantments--%nl%boots%nl%Max level: 2"
    if {_Chance} is 4:
-      give {_player} enchanted book named "Poison II" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Poison II" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
    if {_Chance} is 5:
-      give {_player} enchanted book named "Bleed I" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Bleed I" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 6:
-      give {_player} enchanted book named "Velocity II" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Velocity II" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
    if {_Chance} is 7:
-      give {_player} enchanted book named "Cripple II" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Cripple II" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 8:
-      give {_player} enchanted book named "Butcher II" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Butcher II" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 9:
-      give {_player} enchanted book named "Stick I" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Stick I" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 2"
    if {_Chance} is 10:
-      give {_player} enchanted book named "Extractor I" with lore "--Wadwe's Enchantments--%nl%pickaxe"
+      give {_player} enchanted book named "Extractor I" with lore "--Wadwe's Enchantments--%nl%pickaxe%nl%Max level: 3"
    if {_Chance} is 11:
-      give {_player} enchanted book named "Sixth Sense I" with lore "--Wadwe's Enchantments--%nl%helmet"
+      give {_player} enchanted book named "Sixth Sense I" with lore "--Wadwe's Enchantments--%nl%helmet%nl%Max level: 3"
    if {_Chance} is 12:
-      give {_player} enchanted book named "Smoke Grenade II" with lore "--Wadwe's Enchantments--%nl%chestplate"
+      give {_player} enchanted book named "Combat Roll II" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 3"
    if {_Chance} is 13:
-      give {_player} enchanted book named "Ricochet I" with lore "--Wadwe's Enchantments--%nl%crossbow"
+      give {_player} enchanted book named "Ricochet I" with lore "--Wadwe's Enchantments--%nl%crossbow%nl%Max level: 3"
+   if {_Chance} is 14:
+      give {_player} enchanted book named "Plague I" with lore "--Wadwe's Enchantments--%nl%leggings%nl%Max level: 2"
+   if {_Chance} is 15:
+      give {_player} enchanted book named "Holy Protection I" with lore "--Wadwe's Enchantments--%nl%helmet%nl%Max level: 3"
 
 #GIVES THE PLAYER A RANDOM RARE BOOK
 function GetRare(player: player, Chance: integer):
    if {_Chance} is 0:
-      set {_Chance} to random integer between 1 and 18
+      set {_Chance} to random integer between 1 and 22
    if {_Chance} is 1:
-      give {_player} enchanted book named "Smite III" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Smite III" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 2:
-      give {_player} enchanted book named "Reap II" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Reap II" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 3:
-      give {_player} enchanted book named "Tank I" with lore "--Wadwe's Enchantments--%nl%chestplate"
+      give {_player} enchanted book named "Tank I" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 3"
    if {_Chance} is 4:
-      give {_player} enchanted book named "Sonic II" with lore "--Wadwe's Enchantments--%nl%boots"
+      give {_player} enchanted book named "Sonic II" with lore "--Wadwe's Enchantments--%nl%boots%nl%Max level: 2"
    if {_Chance} is 5:
-      give {_player} enchanted book named "Poison III" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Poison III" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
    if {_Chance} is 6:
-      give {_player} enchanted book named "Bleed II" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Bleed II" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 7:
-      give {_player} enchanted book named "Leap I" with lore "--Wadwe's Enchantments--%nl%axe"
+      give {_player} enchanted book named "Leap I" with lore "--Wadwe's Enchantments--%nl%axe%nl%Max level: 2"
    if {_Chance} is 8:
-      give {_player} enchanted book named "Bloodlust I" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Bloodlust I" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 9:
-      give {_player} enchanted book named "Velocity III" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Velocity III" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
    if {_Chance} is 10:
-      give {_player} enchanted book named "Excavator I" with lore "--Wadwe's Enchantments--%nl%pickaxe"
+      give {_player} enchanted book named "Excavator I" with lore "--Wadwe's Enchantments--%nl%pickaxe%nl%Max level: 3"
    if {_Chance} is 11:
-      give {_player} enchanted book named "Butcher III" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Butcher III" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 12:
-      give {_player} enchanted book named "Replenish" with lore "--Wadwe's Enchantments--%nl%armor"
+      give {_player} enchanted book named "Replenish" with lore "--Wadwe's Enchantments--%nl%armor%nl%Max level: 1"
    if {_Chance} is 13:
-      give {_player} enchanted book named "Stick II" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Stick II" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 2"
    if {_Chance} is 14:
-      give {_player} enchanted book named "Extractor II" with lore "--Wadwe's Enchantments--%nl%pickaxe"
+      give {_player} enchanted book named "Extractor II" with lore "--Wadwe's Enchantments--%nl%pickaxe%nl%Max level: 3"
    if {_Chance} is 15:
-      give {_player} enchanted book named "Kinetic Buildup I" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Kinetic Buildup I" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
    if {_Chance} is 16:
-      give {_player} enchanted book named "Sixth Sense II" with lore "--Wadwe's Enchantments--%nl%helmet"
+      give {_player} enchanted book named "Sixth Sense II" with lore "--Wadwe's Enchantments--%nl%helmet%nl%Max level: 3"
    if {_Chance} is 17:
-      give {_player} enchanted book named "Smoke Grenade III" with lore "--Wadwe's Enchantments--%nl%chestplate"
+      give {_player} enchanted book named "Combat Roll III" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 3"
    if {_Chance} is 18:
-      give {_player} enchanted book named "Ricochet II" with lore "--Wadwe's Enchantments--%nl%crossbow"
+      give {_player} enchanted book named "Ricochet II" with lore "--Wadwe's Enchantments--%nl%crossbow%nl%Max level: 3"
+   if {_Chance} is 19:
+      give {_player} enchanted book named "Plague II" with lore "--Wadwe's Enchantments--%nl%leggings%nl%Max level: 2"
+   if {_Chance} is 20:
+      give {_player} enchanted book named "Aura Of Fortitude I" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 2"
+   if {_Chance} is 21:
+      give {_player} enchanted book named "Holy Protection II" with lore "--Wadwe's Enchantments--%nl%helmet%nl%Max level: 3"
+   if {_Chance} is 22:
+      give {_player} enchanted book named "Tractor I" with lore "--Wadwe's Enchantments--%nl%hoe%nl%Max level: 2"
 
 #GIVES THE PLAYER A RANDOM EPIC BOOK
 function GetEpic(player: player, Chance: integer):
    if {_Chance} is 0:
-      set {_Chance} to random integer between 1 and 16
+      set {_Chance} to random integer between 1 and 20
    if {_Chance} is 1:
-      give {_player} enchanted book named "Reap III" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Reap III" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 2:
-      give {_player} enchanted book named "Tank II" with lore "--Wadwe's Enchantments--%nl%chestplate"
+      give {_player} enchanted book named "Tank II" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 3"
    if {_Chance} is 3:
-      give {_player} enchanted book named "Healthy" with lore "--Wadwe's Enchantments--%nl%leggings"
+      give {_player} enchanted book named "Healthy" with lore "--Wadwe's Enchantments--%nl%leggings%nl%Max level: 1"
    if {_Chance} is 4:
-      give {_player} enchanted book named "Bleed III" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Bleed III" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 5:
-      give {_player} enchanted book named "Leap II" with lore "--Wadwe's Enchantments--%nl%axe"
+      give {_player} enchanted book named "Leap II" with lore "--Wadwe's Enchantments--%nl%axe%nl%Max level: 2"
    if {_Chance} is 6:
-      give {_player} enchanted book named "Bloodlust II" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Bloodlust II" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 7:
-      give {_player} enchanted book named "Revenge" with lore "--Wadwe's Enchantments--%nl%chestplate"
+      give {_player} enchanted book named "Revenge" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 1"
    if {_Chance} is 8:
-      give {_player} enchanted book named "Excavator II" with lore "--Wadwe's Enchantments--%nl%pickaxe"
+      give {_player} enchanted book named "Excavator II" with lore "--Wadwe's Enchantments--%nl%pickaxe%nl%Max level: 3"
    if {_Chance} is 9:
-      give {_player} enchanted book named "Rage I" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Rage I" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 2"
    if {_Chance} is 10:
-      give {_player} enchanted book named "Replant" with lore "--Wadwe's Enchantments--%nl%hoe"
+      give {_player} enchanted book named "Replant" with lore "--Wadwe's Enchantments--%nl%hoe%nl%Max level: 1"
    if {_Chance} is 11:
-      give {_player} enchanted book named "Storm I" with lore "--Wadwe's Enchantments--%nl%trident"
+      give {_player} enchanted book named "Storm I" with lore "--Wadwe's Enchantments--%nl%trident%nl%Max level: 2"
    if {_Chance} is 12:
-      give {_player} enchanted book named "Lava Walker" with lore "--Wadwe's Enchantments--%nl%bots"
+      give {_player} enchanted book named "Lava Walker" with lore "--Wadwe's Enchantments--%nl%boots%nl%Max level: 1"
    if {_Chance} is 13:
-      give {_player} enchanted book named "Extractor III" with lore "--Wadwe's Enchantments--%nl%pickaxe"
+      give {_player} enchanted book named "Extractor III" with lore "--Wadwe's Enchantments--%nl%pickaxe%nl%Max level: 3"
    if {_Chance} is 14:
-      give {_player} enchanted book named "Kinetic Buildup II" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Kinetic Buildup II" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
    if {_Chance} is 15:
-      give {_player} enchanted book named "Sixth Sense III" with lore "--Wadwe's Enchantments--%nl%helmet"
+      give {_player} enchanted book named "Sixth Sense III" with lore "--Wadwe's Enchantments--%nl%helmet%nl%Max level: 3"
    if {_Chance} is 16:
-      give {_player} enchanted book named "Ricochet III" with lore "--Wadwe's Enchantments--%nl%crossbow"
+      give {_player} enchanted book named "Ricochet III" with lore "--Wadwe's Enchantments--%nl%crossbow%nl%Max level: 3"
+   if {_Chance} is 17:
+      give {_player} enchanted book named "Aura Of Fortitude II" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 2"
+   if {_Chance} is 18:
+      give {_player} enchanted book named "Holy Protection III" with lore "--Wadwe's Enchantments--%nl%helmet%nl%Max level: 3"
+   if {_Chance} is 19:
+      give {_player} enchanted book named "Tractor II" with lore "--Wadwe's Enchantments--%nl%hoe%nl%Max level: 2"
+   if {_Chance} is 20:
+      give {_player} enchanted book named "Padding" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 1"
 #GIVES THE PLAYER A RANDOM LEGENDARY BOOK
 function GetLegendary(player: player, Chance: integer):
    if {_Chance} is 0:
-      set {_Chance} to random integer between 1 and 7
+      set {_Chance} to random integer between 1 and 8
    if {_Chance} is 1:
-      give {_player} enchanted book named "Tank III" with lore "--Wadwe's Enchantments--%nl%chestplate"
+      give {_player} enchanted book named "Tank III" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 3"
    if {_Chance} is 2:
-      give {_player} enchanted book named "Thunderstorm" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Thunderstorm" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 1"
    if {_Chance} is 3:
-      give {_player} enchanted book named "Bloodlust III" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Bloodlust III" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 4:
-      give {_player} enchanted book named "Excavator III" with lore "--Wadwe's Enchantments--%nl%pickaxe"
+      give {_player} enchanted book named "Excavator III" with lore "--Wadwe's Enchantments--%nl%pickaxe%nl%Max level: 3"
    if {_Chance} is 5:
-      give {_player} enchanted book named "Rage II" with lore "--Wadwe's Enchantments--%nl%sword"
+      give {_player} enchanted book named "Rage II" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 2"
    if {_Chance} is 6:
-      give {_player} enchanted book named "Storm II" with lore "--Wadwe's Enchantments--%nl%trident"
+      give {_player} enchanted book named "Storm II" with lore "--Wadwe's Enchantments--%nl%trident%nl%Max level: 2"
    if {_Chance} is 7:
-      give {_player} enchanted book named "Kinetic Buildup III" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Kinetic Buildup III" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 3"
+   if {_Chance} is 8:
+      give {_player} enchanted book named "Carpet Bomber" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 1"
+
 #GIVES THE PLAYER A RANDOM ADMIN BOOK
 function GetAdmin(player: player, Chance: integer):
    if {_Chance} is 1:
-      give {_player} enchanted book named "Obliterate" with lore "--Wadwe's Enchantments--%nl%stick"
-   if {_Chance} is 2:
-      give {_player} enchanted book named "Anti Material Rifle" with lore "--Wadwe's Enchantments--%nl%bow"
+      give {_player} enchanted book named "Obliterate" with lore "--Wadwe's Enchantments--%nl%stick%nl%Max level: 1"
+   if {_Chance} is 8:
+      give {_player} enchanted book named "Anti Material Rifle" with lore "--Wadwe's Enchantments--%nl%bow%nl%Max level: 1"
+
 #SELECTS THE RARITY OF THE BOOK
 function GetBook(player: player, Rarity: string, Chances: objects):
    set {_Chance} to random integer between 0 and 100
@@ -300,7 +351,7 @@ command /book <integer> <integer>:
             GetEpic(player, {Book})
          else if {Rarity} is 5:
             GetLegendary(player, {Book}) 
-         else if {Rarity} is 6:
+         else if {Rarity} is 192:
             GetAdmin(player, {Book}) 
 
 #INVENTORY STUFF
@@ -313,13 +364,16 @@ on inventory click:
    if event-inventory is (metadata tag "EnchantmentGui" of player):
       if index of event-slot is 10:
          Enchant(player)
-      if index of event-slot is 12:
+      else if index of event-slot is 12:
          SelectRarity(player)
-      if index of event-slot is 16:
+      else if index of event-slot is 14:
+         broadcast "gg"
+         Merge(player)
+      else if index of event-slot is 16:
          Info(player)
 
    #OPTIONS TO CHANGE YOUR ODDS
-   if event-inventory is (metadata tag "SelectRarity" of player):
+   else if event-inventory is (metadata tag "SelectRarity" of player):
       #COMMON
       if index of event-slot is 10:
          if the player's level is greater than 10:
@@ -348,7 +402,7 @@ on inventory click:
          EnchantmentGui(player)
 
    #VALIDATES THE ENCHANT
-   if event-inventory is (metadata tag "Enchant" of player):
+   else if event-inventory is (metadata tag "Enchant" of player):
       if event-slot is 11:
          add event-slot to player's inventory
          set slot 11 of event-inventory to air
@@ -584,49 +638,51 @@ every 1 second:
          remove 1 from {LeapCD.%loop-value%}
       if {SmokeGrenadeCD.%loop-value%} is greater than 0:
          remove 1 from {SmokeGrenadeCD.%loop-value%}
-         broadcast "%{SmokeGrenadeCD.%loop-value%}%"
 #TOOLS
 #SWORDS
 #SMITE - Common, Uncommon, Rare
 on damage:
    if event-damage cause is attack:
-      set {chance} to random integer between 0 and 100
-      if the lore of the attacker's tool contains "Smite I":
-         if {chance} is smaller than 10:
-            strike lightning at the victim
-      else if the lore of the attacker's tool contains "Smite II":
-         if {chance} is smaller than 20:
-            strike lightning at the victim
-      else if the lore of the attacker's tool contains "Smite III":
-         if {chance} is smaller than 35:
+      if attack cooldown of attacker is above 0.5:
+         set {chance} to random integer between 0 and 100
+         if the lore of the attacker's tool contains "Smite I":
+            if {chance} is smaller than 10:
+               strike lightning at the victim
+         else if the lore of the attacker's tool contains "Smite II":
+            if {chance} is smaller than 20:
+               strike lightning at the victim
+         else if the lore of the attacker's tool contains "Smite III":
+            if {chance} is smaller than 35:
             strike lightning at the victim
 #REAP - Uncommon, Rare, Epic
 on damage:
    if event-damage cause is attack:
-      set {reap} to random integer between 0 and 100
-      if the lore of the attacker's tool contains "Reap I":
-         if {reap} is smaller than 5:
-            add 1 to the health of the attacker
-      else if the lore of the attacker's tool contains "Reap II":
-         if {reap} is smaller than 10:
-            add 1 to the health of the attacker
-      else if the lore of the attacker's tool contains "Reap III":
-         if {reap} is smaller than 20:
-            add 1 to the health of the attacker
+      if attack cooldown of attacker is above 0.5:
+         set {reap} to random integer between 0 and 100
+         if the lore of the attacker's tool contains "Reap I":
+            if {reap} is smaller than 5:
+               add 1 to the health of the attacker
+         else if the lore of the attacker's tool contains "Reap II":
+            if {reap} is smaller than 10:
+               add 1 to the health of the attacker
+         else if the lore of the attacker's tool contains "Reap III":
+            if {reap} is smaller than 20:
+               add 1 to the health of the attacker
 #BLEED - Uncommon, Rare, Epic
 on damage:
    if event-damage cause is attack:
-      if the lore of the attacker's tool contains "Bleed I":
-         wait 1 second
-         damage victim by 0.5 hearts
-      else if the lore of the attacker's tool contains "Bleed II":
-         loop 2 times:
+      if attack cooldown of attacker is 1:
+         if the lore of the attacker's tool contains "Bleed I":
             wait 1 second
             damage victim by 0.5 hearts
-      else if the lore of the attacker's tool contains "Bleed III":
-         loop 3 times:
-            wait 1 second
-            damage victim by 0.5 hearts
+         else if the lore of the attacker's tool contains "Bleed II":
+            loop 2 times:
+               wait 1 second
+               damage victim by 0.5 hearts
+         else if the lore of the attacker's tool contains "Bleed III":
+            loop 3 times:
+               wait 1 second
+               damage victim by 0.5 hearts
 #BLOODLUST - Rare, Epic, Legendary
 on death:
    if event-damage cause is attack:
@@ -638,19 +694,20 @@ on death:
             apply strength without particles to attacker for 20 seconds replacing the existing effect
             apply speed without particles to attacker for 20 seconds replacing the existing effect
          else if the lore of the attacker's tool contains "Bloodlust III":
-            apply strength 2 without particles to attacker for 30 seconds replacing the existing effect
+            apply strength without particles to attacker for 30 seconds replacing the existing effect
             apply speed without particles to attacker for 35 seconds replacing the existing effect
             add 1 to the health of the attacker
 #CRIPPLE - Common, Uncommon
 on damage:
    if event-damage cause is attack:
-      set {chance} to random integer between 0 and 100
-      if the lore of the attacker's tool contains "Cripple I":
-         if {chance} is smaller than 10:
-            apply slowness without particles to victim for 3 seconds replacing the existing effect
-      else if the lore of the attacker's tool contains "Cripple II":
-         if {chance} is smaller than 20:
-            apply slowness without particles to victim for 8 seconds replacing the existing effect
+      if attack cooldown of attacker is above 0.5:
+         set {chance} to random integer between 0 and 100
+         if the lore of the attacker's tool contains "Cripple I":
+            if {chance} is smaller than 10:
+               apply slowness without particles to victim for 3 seconds replacing the existing effect
+         else if the lore of the attacker's tool contains "Cripple II":
+            if {chance} is smaller than 20:
+               apply slowness without particles to victim for 8 seconds replacing the existing effect
 #BUTCHER - Common, Uncommon, Rare
 on death:
    if event-damage cause is attack:
@@ -683,9 +740,9 @@ on damage:
       if the lore of the attacker's tool contains "Rage I" or "Rage II":
          set {Ragehealth} to max health of attacker - health of attacker
          if the lore of the attacker's tool contains "Rage I":
-            increase damage by {Ragehealth} / 2
+            increase damage by {Ragehealth} / 4 * attack cooldown of attacker
          else if the lore of the attacker's tool contains "Rage II":
-            increase damage by {Ragehealth}
+            increase damage by {Ragehealth} / 2 * attack cooldown of attacker
 
 #STICK - Uncommon, Rare
 function stick(location: location):
@@ -695,13 +752,14 @@ function stick(location: location):
       set block at {_location} to air
 on damage:
    if event-damage cause is attack:
-      set {StickChance} to random integer between 0 and 100
-      if the lore of the attacker's tool contains "Stick I":
-         if {StickChance} is smaller than 15:
-            stick(victim's location)
-      else if the lore of the attacker's tool contains "Stick II":
-         if {StickChance} is smaller than 35:
-            stick(victim's location)
+      if attack cooldown of attacker is above 0.5:
+         set {StickChance} to random integer between 0 and 100
+         if the lore of the attacker's tool contains "Stick I":
+            if {StickChance} is smaller than 15:
+               stick(victim's location)
+         else if the lore of the attacker's tool contains "Stick II":
+            if {StickChance} is smaller than 35:
+               stick(victim's location)
 #BOW
 #POISON - Common, Uncommon, Rare
 on damage:
@@ -762,11 +820,17 @@ on shoot:
    if projectile is an arrow:
       if the lore of the shooter's tool contains "Kinetic Buildup I" or "Kinetic Buildup II" or "Kinetic Buildup III":
          if the lore of the shooter's tool contains "Kinetic Buildup I":
-            set {KineticBuildup.%shooter%} to {KineticBuildup.%shooter%} / 30
-         if the lore of the shooter's tool contains "Kinetic Buildup II":
-            set {KineticBuildup.%shooter%} to {KineticBuildup.%shooter%} / 20
-         if the lore of the shooter's tool contains "Kinetic Buildup III":
-            set {KineticBuildup.%shooter%} to {KineticBuildup.%shooter%} / 10
+            set {KineticBuildup.%shooter%} to {KineticBuildup.%shooter%} / 300
+            if {KineticBuildup.%shooter%} is greater than 2:
+               set {KineticBuildup.%shooter%} to 2
+         else if the lore of the shooter's tool contains "Kinetic Buildup II":
+            set {KineticBuildup.%shooter%} to {KineticBuildup.%shooter%} / 200
+            if {KineticBuildup.%shooter%} is greater than 3:
+               set {KineticBuildup.%shooter%} to 3
+         else if the lore of the shooter's tool contains "Kinetic Buildup III":
+            set {KineticBuildup.%shooter%} to {KineticBuildup.%shooter%} / 100
+            if {KineticBuildup.%shooter%} is greater than 5:
+               set {KineticBuildup.%shooter%} to 5
          add 1 to {KineticBuildup.%shooter%}
          set {KineticBuildupVelocity} to velocity of projectile
          set x of {KineticBuildupVelocity} to x of {KineticBuildupVelocity} * {KineticBuildup.%shooter%}
@@ -774,39 +838,69 @@ on shoot:
          set z of {KineticBuildupVelocity} to z of {KineticBuildupVelocity} * {KineticBuildup.%shooter%}
          set Velocity of projectile to {KineticBuildupVelocity}
          set {KineticBuildup.%shooter%} to 0
+#CARPET BOMBER - Legendary
+on shoot:
+   if the lore of the shooter's tool contains "Carpet Bomber":
+      set {CarpetBomb.%projectile%} to 1
+      if projectile is an arrow:
+         wait 5 ticks
+         loop 100 times:
+            if {CarpetBomb.%projectile%} is 1:
+               spawn tnt at the projectile
+               set name of last spawned tnt to "Carpet Bomb"
+               wait 5 ticks
+            else:
+               stop loop
+on projectile hit:
+   if projectile is an arrow:
+      set {CarpetBomb.%projectile%} to 0
+on explode:
+   set {CarpetBombName} to name of event-entity
+   if {CarpetBombName} is "Carpet Bomb":
+      cancel event
+      play huge explosion at position of event-entity
+on damage:
+   if attacker is tnt:
+      set {CarpetBombName} to name of attacker
+      if {CarpetBombName} is "Carpet Bomb":
+         if victim is a dropped item:
+            cancel event
 #CROSSBOW
 #RICOCHET
 function Ricochet(victim: entity, world: world, location: location, uuid: string, RicochetUuids: objects, length: integer):
    add {_uuid} to {_RicochetUuids::*}
    set {_RicochetClosest} to first element of all entities in {_world}
    set {RicochetIsEntity} to false
-   loop entities in radius 5 of {_location}:
+   loop entities in radius 10 of {_location}:
       if {_RicochetUuids::*} doesn't contain uuid of loop-entity:
          if artificial intelligence of loop-entity is true:
-            if distance between loop-entity and {_location} is less than distance between {_location} and {_RicochetClosest}:
-               set {_RicochetClosest} to loop-entity
-               set {_uuid} to uuid of loop-entity
-               set {_RicochetEntity} to location of {_location}
-               set {_RicochetTarget} to location of {_RicochetClosest}
-               set {_RicochetVector} to vector 0,0,0
-            set {_RicochetIsEntity} to true
+            if {AllyUuids::*} doesn't contain uuid of loop-entity:
+               if distance between loop-entity and {_location} is less than distance between {_location} and {_RicochetClosest}:
+                  set {_RicochetClosest} to loop-entity
+                  set {_uuid} to uuid of loop-entity
+                  set {_RicochetEntity} to location of {_location}
+                  set {_RicochetTarget} to location of {_RicochetClosest}
+                  set {_RicochetVector} to vector 0,0,0
+               set {_RicochetIsEntity} to true
 
    if {_RicochetIsEntity} is true:
-      set x of {_RicochetVector} to (x-coordinate of {_RicochetEntity} - x-coordinate of {_RicochetTarget}) * -5
-      set y of {_RicochetVector} to (y-coordinate of {_RicochetEntity} - y-coordinate of {_RicochetTarget}) * -5
-      set z of {_RicochetVector} to (z-coordinate of {_RicochetEntity} - z-coordinate of {_RicochetTarget}) * -5
+      set x of {_RicochetVector} to (x-coordinate of {_RicochetEntity} - x-coordinate of {_RicochetTarget}) * -1
+      set y of {_RicochetVector} to (y-coordinate of {_RicochetEntity} - y-coordinate of {_RicochetTarget}) * -1
+      set z of {_RicochetVector} to (z-coordinate of {_RicochetEntity} - z-coordinate of {_RicochetTarget}) * -1
       set {_RicochetVector} to normalized {_RicochetVector}
+      set x of {_RicochetVector} to x of {_RicochetVector} * 2
+      set y of {_RicochetVector} to y of {_RicochetVector} * 2
+      set z of {_RicochetVector} to z of {_RicochetVector} * 2
       spawn arrow 0.5 blocks above {_location}
       set name of last spawned arrow to "Ricochet Arrow"
       set velocity of last spawned arrow to {_RicochetVector}
-      wait 5 ticks
+      wait 2 ticks
       remove 1 from {_length}
       if {_length} is greater than 1:
          Ricochet({_RicochetClosest}, {_world}, {_RicochetTarget}, {_uuid}, {_RicochetUuids::*}, {_length})
-
 on damage:
    if lore of attacker's tool contains "Ricochet I":
-      Ricochet(victim, world, location of victim, uuid of victim, 1, 15)
+      Ricochet(victim, world, location of victim, uuid of victim, 1, 5)
    if lore of attacker's tool contains "Ricochet II":
       Ricochet(victim, world, location of victim, uuid of victim, 1, 10)
    if lore of attacker's tool contains "Ricochet III":
@@ -830,9 +924,9 @@ on damage:
                spawn trident 30 blocks above the victim
                set name of last spawned trident to "Storm Trident"
                set {StormRandomX} to a random integer between -50 and 50
-               set {StormRandomZ} to a random integer between -50 and 50 
+               set {StormRandomZ} to a random integer between -50 and 50
                set velocity of last spawned trident to vector {StormRandomX}/100,-5,{StormRandomZ}/100
-               wait 1 ticks
+               wait 1 tick
    if {StormName} is "Storm Trident":
       strike lightning at the victim
 #SHIELD
@@ -926,6 +1020,16 @@ on block break:
          if player's inventory contains "nether wart" parsed as itemtype:
             set location of event-block to nether wart plant
             remove 1 nether wart from the player's inventory
+#TRACTOR
+on right click on dirt or grass block:
+   if the lore of the player's tool contains "Tractor I":
+      loop blocks in radius 1 around location of event-block:
+         if loop-block is dirt or grass block:
+            set loop-block to farmland
+   if the lore of the player's tool contains "Tractor II":
+      loop blocks in radius 2 around location of event-block:
+         if loop-block is dirt or grass block:
+            set loop-block to farmland
 #FISHING ROD       
 #ARMOR
 #REPLENISH - Uncommon
@@ -957,6 +1061,14 @@ every second:
       loop entities in radius {SixthSenseRange} of loop-player:
          if loop-entity-2 isn't loop-player-1:
             apply glowing without particles to loop-entity-2 for 2 seconds replacing the existing effect
+on damage:
+   if damage was caused by lightning:
+      if the lore of the victim's helmet contains "Holy Protection I":
+         set damage to damage * 0.75
+      else if the lore of the victim's helmet contains "Holy Protection II":
+         set damage to damage * 0.66
+      else if the lore of the victim's helmet contains "Holy Protection III":
+         set damage to damage * 0.5
 #CHESTPLATE
 #TANK - Rare, Epic, Legendary
 every 1 second:
@@ -972,12 +1084,13 @@ every 1 second:
 #REVENGE - Epic
 on death:
    if the lore of the victim's chestplate contains "Revenge":
-      set {RevengeX::*} to 0, 0, 0.15, -0.15, 0.1, 0.1, -0.1, -0.1
-      set {RevengeZ::*} to 0.15, -0.15, 0, 0, 0.1, -0.1, 0.1, -0.1
-      loop 8 times:
-         spawn tnt at the victim
-         set the name of the last spawned tnt to "Revenge TNT"
-         set the Velocity of the last spawned tnt to vector {RevengeX::%loop-value%},0.5,{RevengeZ::%loop-value%}
+      set {RevengeLocation.%victim%} to location of victim
+      set {RevengeLocation.%victim%}'s pitch to -50
+      loop 100 times:
+         set {RevengeLocation.%victim%}'s yaw to a random integer between 0 and 360
+         shoot tnt from {RevengeLocation.%victim%} at speed 0.1 * random integer between 1 and 10
+         set name of last shot tnt to "Revenge TNT"
+         wait 1 ticks
 on explode:
    set {RevengeName} to name of event-entity
    if {RevengeName} is "Revenge TNT":
@@ -989,22 +1102,56 @@ on damage:
       if {RevengeName} is "Revenge TNT":
          if victim is a dropped item:
             cancel event
-#SMOKE GRENADE - Common, Uncommon, Rare
+#Combat Roll - Common, Uncommon, Rare
 on damage:
-   if {SmokeGrenadeCD.%victim%} is 0:
-      cancel event
-      play huge explosion at position of victim
-   if the lore of the victim's chestplate contains "Smoke Grenade I":
+   if the lore of the victim's chestplate contains "Combat Roll I" or "Combat Roll II" or "Combat Roll III":
+      if {SmokeGrenadeCD.%victim%} is 0:
+         cancel event
+         play huge explosion at position of victim
+   if the lore of the victim's chestplate contains "Combat Roll I":
       set {SmokeGrenadeCD.%victim%} to 10
-   if the lore of the victim's chestplate contains "Smoke Grenade II":
+   if the lore of the victim's chestplate contains "Combat Roll II":
       set {SmokeGrenadeCD.%victim%} to 8
-   if the lore of the victim's chestplate contains "Smoke Grenade III":
+   if the lore of the victim's chestplate contains "Combat Roll III":
       set {SmokeGrenadeCD.%victim%} to 6
+#AURA OF FORTITUDE
+every 1 second:
+   loop all players:
+      if the lore of the loop-player's chestplate contains "Aura Of Fortitude I":
+         loop all players in radius 5 of loop-player-1:
+            if loop-player-2 isn't loop-player-1:
+               if {AllyUuids.%loop-player-1%::*} contains uuid of loop-player-2:
+                  apply resistance without particles to loop-player-2 for 2 seconds replacing the existing effect
+      if the lore of the loop-player's chestplate contains "Aura Of Fortitude II":
+         loop all players in radius 8 of loop-player-1:
+            if loop-player-2 isn't loop-player-1:
+               if {AllyUuids.%loop-player-1%::*} contains uuid of loop-player-2:
+                  apply resistance without particles to loop-player-2 for 2 seconds replacing the existing effect
+#PADDING
+on damage:
+   if event-damagecause is a projectile:
+      if the lore of the victim's chestplate contains "Padding":
+         set {PaddingVelocity} to sqrt(abs(x of velocity of projectile + y of velocity of projectile + z of velocity of projectile))
+         set damage to damage / {PaddingVelocity}
+#LEGGINGS
 #HEALTHY - Epic
 every 1 second:
    loop all players:
       if the lore of the loop-player's leggings contains "Healthy":
          apply regeneration without particles to loop-player for 2 seconds replacing the existing effect
+#PLAGUE - Uncommon, Rare
+every 1 second:
+   loop all players:
+      if the lore of the loop-player's leggings contains "Plague I":
+         loop all players in radius 5 of loop-player-1:
+            if loop-player-2 isn't loop-player-1:
+               if {AllyUuids.%loop-player-1%::*} doesn't contain uuid of loop-player-2:
+                  apply poison without particles to loop-player-2 for 2 seconds replacing the existing effect
+      else if the lore of the loop-player's leggings contains "Plague II":
+         loop all players in radius 8 of loop-player-1:
+            if loop-player-2 isn't loop-player-1:
+               if {AllyUuids.%loop-player-1%::*} doesn't contain uuid of loop-player-2:
+                  apply poison 2 without particles to loop-player-2 for 2 seconds replacing the existing effect
 #BOOTS
 #SONIC - Uncommon, Rare
 every 1 second:
@@ -1047,11 +1194,10 @@ function Lava(player:player):
       set block at location at {_blocks::%loop-index%} to {_LavaWalkerBlock}
 on player move:
    if lore of player's boots contain "Lava Walker":
+      broadcast "gg"
       if block under player is lava:
          Lava(player)
-
 #ELYTRA
-
 
 
 #ADMIN ENCHANTS
@@ -1069,6 +1215,8 @@ on damage:
       if the lore of the attacker's tool contains "Anti Material Rifle":
          play huge explosion at position of victim
 
-
 on damage:
    send "you did %damage% damage" to attacker
+
+on death:
+   send "fdgf"
