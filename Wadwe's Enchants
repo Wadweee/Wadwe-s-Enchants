@@ -47,8 +47,9 @@ function SelectRarity(player: player):
 
 #GUI TO MERGE BOOKS
 function Merge(player: player):
-   set slots 26 of metadata tag "SelectRarity" of {_player} to red stained glass pane named "Leave"
-   open (metadata tag "SelectRarity" of {_player}) to {_player}
+   set metadata tag "Merge" of {_player} to chest inventory with 3 rows named "Merge"
+   set slots 26 of metadata tag "Merge" of {_player} to red stained glass pane named "Leave"
+   open (metadata tag "Merge" of {_player}) to {_player}
    set {InvOpen.%{_player}%} to true
 
 #GUI TO SEE ALL THE BOOKS
@@ -94,7 +95,7 @@ function ShowBooks(player: player, type: string):
    else if {_type} is "bows":
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Poison" with lore "Poison the enemy on hit%nl%common, uncommon, rare"
       set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Velocity" with lore "Arrows travel thurther and faster%nl%common, uncommon, rare"
-      set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Thunderstorm" with lore "Rain down lightning onto your arrow%nl%legendary"
+      set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Thunderstorm" with lore "Rain down lightning on to your arrow%nl%legendary"
       set slots 3 of metadata tag "ShowBooks" of {_player} to enchanted book named "Kinetic Buildup" with lore "Buildup kinetic energy from arrows to fire a stronger arrow%nl%rare, epic, legendary"
       set slots 7 of metadata tag "ShowBooks" of {_player} to enchanted book named "Carpet Bomber" with lore "HeHeHaHa%nl%legendary"
    else if {_type} is "crossbows":
@@ -351,7 +352,7 @@ command /book <integer> <integer>:
             GetEpic(player, {Book})
          else if {Rarity} is 5:
             GetLegendary(player, {Book}) 
-         else if {Rarity} is 192:
+         else if {Rarity} is 456:
             GetAdmin(player, {Book}) 
 
 #INVENTORY STUFF
@@ -367,7 +368,6 @@ on inventory click:
       else if index of event-slot is 12:
          SelectRarity(player)
       else if index of event-slot is 14:
-         broadcast "gg"
          Merge(player)
       else if index of event-slot is 16:
          Info(player)
@@ -1129,7 +1129,7 @@ every 1 second:
                   apply resistance without particles to loop-player-2 for 2 seconds replacing the existing effect
 #PADDING
 on damage:
-   if event-damagecause is a projectile:
+   if damage was caused by a projectile:
       if the lore of the victim's chestplate contains "Padding":
          set {PaddingVelocity} to sqrt(abs(x of velocity of projectile + y of velocity of projectile + z of velocity of projectile))
          set damage to damage / {PaddingVelocity}
@@ -1194,7 +1194,6 @@ function Lava(player:player):
       set block at location at {_blocks::%loop-index%} to {_LavaWalkerBlock}
 on player move:
    if lore of player's boots contain "Lava Walker":
-      broadcast "gg"
       if block under player is lava:
          Lava(player)
 #ELYTRA
@@ -1217,6 +1216,4 @@ on damage:
 
 on damage:
    send "you did %damage% damage" to attacker
-
-on death:
-   send "fdgf"
+   send "you took %damage% damage" to victim
