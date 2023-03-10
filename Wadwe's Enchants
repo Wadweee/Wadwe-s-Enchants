@@ -48,9 +48,13 @@ function SelectRarity(player: player):
 #GUI TO MERGE BOOKS
 function Merge(player: player):
    set metadata tag "Merge" of {_player} to chest inventory with 3 rows named "Merge"
+   set slots 1,2,3,4,5,10,14,19,20,21,22,23 of metadata tag "Merge" of {_player} to blue stained glass pane
+   set slot 6 of metadata tag "Merge" of {_player} to barrier block named "RESET"
+   set slot 24 of metadata tag "Merge" of {_player} to anvil named "MERGE"
    set slots 26 of metadata tag "Merge" of {_player} to red stained glass pane named "Leave"
    open (metadata tag "Merge" of {_player}) to {_player}
    set {InvOpen.%{_player}%} to true
+   set {MergeInv.%{_player}%} to true
 
 #GUI TO SEE ALL THE BOOKS
 function Info(player: player):
@@ -97,11 +101,12 @@ function ShowBooks(player: player, type: string):
       set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Velocity" with lore "Arrows travel thurther and faster%nl%common, uncommon, rare"
       set slots 2 of metadata tag "ShowBooks" of {_player} to enchanted book named "Thunderstorm" with lore "Rain down lightning on to your arrow%nl%legendary"
       set slots 3 of metadata tag "ShowBooks" of {_player} to enchanted book named "Kinetic Buildup" with lore "Buildup kinetic energy from arrows to fire a stronger arrow%nl%rare, epic, legendary"
-      set slots 7 of metadata tag "ShowBooks" of {_player} to enchanted book named "Carpet Bomber" with lore "HeHeHaHa%nl%legendary"
+      set slots 4 of metadata tag "ShowBooks" of {_player} to enchanted book named "Carpet Bomber" with lore "HeHeHaHa%nl%legendary"
    else if {_type} is "crossbows":
       set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Ricochet" with lore "Projectiles bounce from enemy to enemy%nl%rare, epic, legendary"
    else if {_type} is "tridents":
-      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Storm" with lore "Rain down tridents%nl%epic, legendary"
+      set slots 0 of metadata tag "ShowBooks" of {_player} to enchanted book named "Rain Rider" with lore "Riptiding becomes stronger%nl%rare, epic"
+      set slots 1 of metadata tag "ShowBooks" of {_player} to enchanted book named "Storm" with lore "Rain down tridents%nl%epic, legendary"
    else if {_type} is "shields":
       stop
    else if {_type} is "tools":
@@ -201,7 +206,7 @@ function GetUncommon(player: player, Chance: integer):
 #GIVES THE PLAYER A RANDOM RARE BOOK
 function GetRare(player: player, Chance: integer):
    if {_Chance} is 0:
-      set {_Chance} to random integer between 1 and 22
+      set {_Chance} to random integer between 1 and 23
    if {_Chance} is 1:
       give {_player} enchanted book named "Smite III" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 2:
@@ -246,11 +251,13 @@ function GetRare(player: player, Chance: integer):
       give {_player} enchanted book named "Holy Protection II" with lore "--Wadwe's Enchantments--%nl%helmet%nl%Max level: 3"
    if {_Chance} is 22:
       give {_player} enchanted book named "Tractor I" with lore "--Wadwe's Enchantments--%nl%hoe%nl%Max level: 2"
+   if {_Chance} is 23:
+      give {_player} enchanted book named "Rain Rider I" with lore "--Wadwe's Enchantments--%nl%trident%nl%Max level: 2"
 
 #GIVES THE PLAYER A RANDOM EPIC BOOK
 function GetEpic(player: player, Chance: integer):
    if {_Chance} is 0:
-      set {_Chance} to random integer between 1 and 20
+      set {_Chance} to random integer between 1 and 21
    if {_Chance} is 1:
       give {_player} enchanted book named "Reap III" with lore "--Wadwe's Enchantments--%nl%sword%nl%Max level: 3"
    if {_Chance} is 2:
@@ -291,6 +298,8 @@ function GetEpic(player: player, Chance: integer):
       give {_player} enchanted book named "Tractor II" with lore "--Wadwe's Enchantments--%nl%hoe%nl%Max level: 2"
    if {_Chance} is 20:
       give {_player} enchanted book named "Padding" with lore "--Wadwe's Enchantments--%nl%chestplate%nl%Max level: 1"
+   if {_Chance} is 21:
+      give {_player} enchanted book named "Rain Rider II" with lore "--Wadwe's Enchantments--%nl%trident%nl%Max level: 2"
 #GIVES THE PLAYER A RANDOM LEGENDARY BOOK
 function GetLegendary(player: player, Chance: integer):
    if {_Chance} is 0:
@@ -572,6 +581,48 @@ on inventory click:
             set event-slot to {ItemTemp}
             if slot 11 of metadata tag "Enchant" of player is anvil named "Enchant" with lore "Combine items and enchanted books":
                set slot 11 of metadata tag "Enchant" of player to air
+               
+   #ALLOWS YOU TO MERGE BOOKS         
+   if event-inventory is (metadata tag "Merge" of player):
+      if index of event-slot is 6:
+         give player slot 11,12,13 of metadata tag "Merge" of player
+         set slots 11,12,13 of metadata tag "Merge" of player to air
+      if index of event-slot is 24:
+         set {MergeSlot1} to name of slot 11 of metadata tag "Merge" of Player
+         set {MergeSlot2} to name of slot 12 of metadata tag "Merge" of Player
+         set {MergeSlot3} to name of slot 13 of metadata tag "Merge" of Player
+         if {MergeSlot1} is {MergeSlot2} and {MergeSlot3}:
+            set {MergeLore::*} to lore of slot 13 of metadata tag "Merge" of Player
+            set {MergeMaxLevelElement} to last element of {MergeLore::*}
+            set {MergeMaxLevelList::*} to {MergeMaxLevelElement} split at " "
+            set {MergeLevelList::*} to {MergeSlot1} split at " "
+            set {MergeMaxLevel} to {MergeMaxLevelList::%size of {MergeMaxLevelList::*}%} parsed as an integer#MAX LEVEL OF THE BOOK
+            set {MergeLevel} to length of {MergeLevelList::%size of {MergeLevelList::*}%} #CURRENT LEVEL OF THE BOOKe
+            if {MergeLevel} is less than {MergeMaxLevel}:
+               play sound "block.anvil.use"
+               set slots 11,12,13 of metadata tag "Merge" of player to air
+               set {MergeNewName} to "%{MergeSlot1}%I"
+               give player enchanted book named {MergeNewName} with lore {MergeLore::*}
+
+         else:
+            play sound "block.anvil.place"
+
+      if index of event-slot is 26:
+         EnchantmentGui(player)
+
+   #PLACE THE BOOKS INTO THE GUI
+   if {MergeInv.%player%} is true:
+      if event-inventory isn't (metadata tag "Merge" of player):
+         if event-slot's lore contains "--Wadwe's Enchantments--":
+            if slot 11 of metadata tag "Merge" of player is air:
+               set slot 11 of metadata tag "Merge" of player to event-slot
+               set event-slot to air
+            else if slot 12 of metadata tag "Merge" of player is air:
+               set slot 12 of metadata tag "Merge" of player to event-slot
+               set event-slot to air
+            else if slot 13 of metadata tag "Merge" of player is air:
+               set slot 13 of metadata tag "Merge" of player to event-slot
+               set event-slot to air
 
    #PICK WHAT TYPE OF BOOKS YOU WANT
    if event-inventory is (metadata tag "Info" of player):
@@ -619,13 +670,19 @@ on inventory click:
       if index of event-slot is 26:
          Info(player)
 
+
 #STOPS SOME STUFF FROM HAPPENING OUT OF THE GUI
 on inventory close:
    if {EnchantInv.%player%} is true:
       give player slot 11 of metadata tag "Enchant" of player
       give player slot 15 of metadata tag "Enchant" of player
+   if {MergeInv.%player%} is true:
+      give player slot 11 of metadata tag "Merge" of player
+      give player slot 12 of metadata tag "Merge" of player
+      give player slot 13 of metadata tag "Merge" of player
    set {InvOpen.%player%} to false
    set {EnchantInv.%player%} to false
+   set {MergeInv.%player%} to false
 
 on join:
    set {LeapCD.%player%} to 0
@@ -929,6 +986,14 @@ on damage:
                wait 1 tick
    if {StormName} is "Storm Trident":
       strike lightning at the victim
+#RAIN RIDER - Rare, Epic
+on riptide:
+   if the lore of the player's tool contains "Rain Rider I":
+      push the player in the Direction of the player at speed 2
+      apply resistance without particles to player for 3 seconds replacing the existing effect
+   if the lore of the player's tool contains "Rain Rider II":
+      push the player in the Direction of the player at speed 3
+      apply resistance without particles to player for 5 seconds replacing the existing effect
 #SHIELD
 #PICKAXE
 #EXTRACTOR - Uncommon, Rare, Epic
